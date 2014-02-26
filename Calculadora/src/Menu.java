@@ -7,8 +7,8 @@ public class Menu {
 		// TODO Auto-generated method stub
 		
 		Ventana nueva = new  Ventana(0,0,null);
-		nueva.setaltura(250);
-		nueva.setancho(300);
+		nueva.setaltura(200);
+		nueva.setancho(250);
 		nueva.setitulo("Calculadora Basica");
 		
 		nueva.mostrar();

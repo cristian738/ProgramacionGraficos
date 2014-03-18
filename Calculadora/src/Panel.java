@@ -15,7 +15,7 @@ public class Panel extends JPanel
 	
 	public Panel ()
 	{
-		setLayout (new BorderLayout(6,1));
+		setLayout (new BorderLayout());
 		
 		operacion=new JButton("Presione Aqui");//instanciarlo
 		operacion.addActionListener(new ActionListener()

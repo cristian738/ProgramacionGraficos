@@ -57,7 +57,8 @@ public class Ventana extends JFrame
 	{
 		this.ancho=ancho;
 	}
-	public void setitulo(String titulo)
+	
+	public void setTitulo(String titulo)
 	{
 		this.titulo=titulo;
 	}

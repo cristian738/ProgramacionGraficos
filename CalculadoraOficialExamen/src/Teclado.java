@@ -35,9 +35,6 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 	
 	private StringListener textOperador; //hacer un puente de comunicacion teclado stringlistener a caja de texto
 	
-	private String operacion;
-	
-	
 	public Teclado()
 	{
 		this.setLayout(new GridLayout(4,4,3,2));//hacer una tabla //poner espacio en los botones
@@ -76,22 +73,22 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 		igual.addActionListener(this);
 		suma.addActionListener(this);
 		///////////////////////////agregando
-		this.add(num7);
-		this.add(num8);
-		this.add(num9);
-		this.add(div);
-		this.add(num4);
-		this.add(num5);
-		this.add(num6);
-		this.add(mul);
-		this.add(num1);
-		this.add(num2);
-		this.add(num3);
-		this.add(res);
-		this.add(num0);
-		this.add(punto);
-		this.add(igual);
-		this.add(suma);
+		add(num7);
+		add(num8);
+		add(num9);
+		add(div);
+		add(num4);
+		add(num5);
+		add(num6);
+		add(mul);
+		add(num1);
+		add(num2);
+		add(num3);
+		add(res);
+		add(num0);
+		add(punto);
+		add(igual);
+		add(suma);
 		
 	}
 	
@@ -251,38 +248,34 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 				double b=0.0;
 				////////////
 				int auxiliar=1;//Busca la posicion de los operadores
-				int buscarMul=0,buscarDiv=0,buscarSuma=0,buscarResta=0;
+				int buscarMul,buscarDiv,buscarSuma,buscarResta;
 				
-				while(buscarMul<array.length && array[buscarMul]!="*")
+				for(buscarMul=0; buscarMul<array.length && array[buscarMul]!="*";)
 					buscarMul++;
-	    		while(buscarDiv<array.length && array[buscarDiv]!="/")
+	    		for(buscarDiv=0; buscarDiv<array.length && array[buscarDiv]!="/";)
 	    			buscarDiv++;
-	    		while(buscarSuma<array.length && array[buscarSuma]!="+")
+	    		for(buscarSuma=0; buscarSuma<array.length && array[buscarSuma]!="+";)
 	    			buscarSuma++;
-	    		while(buscarResta<array.length && array[buscarResta]!="-")
+	    		for(buscarResta=0; buscarResta<array.length && array[buscarResta]!="-";)
 	    			buscarResta++;
 	    		///////////
 	    		//Jerarquia de operaciones
 	    		if(buscarMul<buscarDiv)
 	    		{
 	    			indice=buscarMul;
-	    			
 	    		}
 	    		else
 	    			if(buscarMul>buscarDiv)
 	    			{
 	    				indice=buscarDiv;
-	    				
 	    			}
 	    			else
 						if(buscarSuma<buscarResta){
-							indice=buscarSuma;
-							
+							indice=buscarSuma;							
 						}
 			    		else
 			    		{
-							indice=buscarResta;
-							
+							indice=buscarResta;							
 			    		}	
 				
 				if(indice<array.length)
@@ -306,6 +299,7 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 		    		
 		    		switch(entrada)
 		    		{
+		    		//String.valueOf//convertir de double a string
 		    			case 1:						
 		    				a=Double.parseDouble(array[indice-1]); 			 
 							b=Double.parseDouble(array[indice+auxiliar]); 
@@ -313,7 +307,7 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 							array[indice-1]=null;
 							array[indice+auxiliar]=null;
 							array[indice]=null;
-							array[indice+auxiliar]=String.valueOf(multiplicacion(a,b));//convertir de double a string
+							array[indice+auxiliar]=String.valueOf(multiplicacion(a,b));
 							buscarMul=0;	
 							resultado=indice+auxiliar;
 							break;

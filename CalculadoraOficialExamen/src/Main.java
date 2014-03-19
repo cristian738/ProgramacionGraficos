@@ -9,7 +9,7 @@ public class Main {
 		
 		calculadora .setancho(230);
 		calculadora .setaltura(320);
-		calculadora.setTitle("Calculadora");
+		calculadora.setTitulo("Calculadora");
 		
 		calculadora .mostrar();
 		

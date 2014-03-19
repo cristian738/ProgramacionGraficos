@@ -21,10 +21,11 @@ public class Texto extends JPanel
 				text.setFont(new Font( "ARIAL",Font.BOLD,20 ));
 				//text.setEditable(true);
 
-		add(text,BorderLayout.CENTER);
+		add(text,BorderLayout.CENTER);//divide el cuadro
 	}
 	
-	public void abrirText(String texto) {
+	public void abrirText(String texto)//se implementa con la interfaz Stringlistener 
+	{
 		text.append(texto);
 	}
 

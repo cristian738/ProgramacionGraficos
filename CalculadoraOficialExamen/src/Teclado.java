@@ -266,22 +266,24 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 	    		if(buscarMul<buscarDiv)
 	    		{
 	    			indice=buscarMul;
-	    			operacion="*";
+	    			
 	    		}
-    			if(buscarMul>buscarDiv)
-    			{
-    				indice=buscarDiv;
-    				operacion="/";
-    			}
-				if(buscarSuma<buscarResta){
-					indice=buscarSuma;
-					operacion="+";
-				}
 	    		else
-	    		{
-					indice=buscarResta;
-					operacion="-";
-	    		}	
+	    			if(buscarMul>buscarDiv)
+	    			{
+	    				indice=buscarDiv;
+	    				
+	    			}
+	    			else
+						if(buscarSuma<buscarResta){
+							indice=buscarSuma;
+							
+						}
+			    		else
+			    		{
+							indice=buscarResta;
+							
+			    		}	
 				
 				if(indice<array.length)
 			    	while(array[indice+auxiliar]==null)
@@ -311,7 +313,7 @@ public class Teclado extends JPanel implements ActionListener,Operaciones
 							array[indice-1]=null;
 							array[indice+auxiliar]=null;
 							array[indice]=null;
-							array[indice+auxiliar]=String.valueOf(multiplicacion(a,b));
+							array[indice+auxiliar]=String.valueOf(multiplicacion(a,b));//convertir de double a string
 							buscarMul=0;	
 							resultado=indice+auxiliar;
 							break;

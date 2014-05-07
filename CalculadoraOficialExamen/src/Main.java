@@ -10,6 +10,7 @@ public class Main {
 		calculadora .setancho(230);
 		calculadora .setaltura(320);
 		calculadora.setTitulo("Calculadora");
+		calculadora.setLocation(450,50);
 		
 		calculadora .mostrar();
 		

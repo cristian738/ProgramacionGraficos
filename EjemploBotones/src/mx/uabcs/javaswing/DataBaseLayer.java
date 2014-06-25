@@ -13,15 +13,15 @@ public class DataBaseLayer//capa de base de datos
 	private Connection conn;
 	private Statement stm;
 	////
-	private ResultSet rs;//objecto guardar resultado de la base de datos
+	private ResultSet rs;//va a trater los registro de la base de datos
 	/////
 	
 	private String server = "localhost";
-	private String db = "progra3";//cambiar como se llama la base de datos
+	private String db = "progra3";
 	private String user="root";
 	private String pwd="rosasgonzalez738";
 	
-	TextPanel textPanel;
+
 	
 	//contructor
 	public DataBaseLayer()
@@ -71,57 +71,23 @@ public class DataBaseLayer//capa de base de datos
 	}
 	///////////
 	
-	public void delQuery(FormEvent e, String ide){//borrar
-		try {		
-			String sql = "DELETE"+"FROM trabajador" +"nombre ="+"'"+e.getName()+"',"+
-																    "ocupacion ="+"'"+e.getOccupation()+"',"+
-																    "tipoEmpleado="+"'"+e.getAgeCategory()+"',"+
-																    "edad="+e.getDefaNa()+","+
-																    "genero="+"'"+e.getGenero()+"',"+
-																    "pais="+"'"+e.getNacion()+"'" + 
-																    "Where idTrabajador="+ide+";";
-			System.out.println(sql);
-			stm.executeUpdate(sql);
-		} catch (SQLException t) {
-			// TODO Auto-generated catch block
-			t.printStackTrace();
-		}
-	}
-	////////
-	public void actQuery(FormEvent e, String ide){//actualizar
-		try {
-			String sql = "UPDATE trabajador "+ "SET "+"nombre ="+"'"+e.getName()+"',"+
-												    "ocupacion ="+"'"+e.getOccupation()+"',"+
-												    "tipoEmpleado="+"'"+e.getAgeCategory()+"',"+
-												    "edad="+e.getDefaNa()+","+
-												    "genero="+"'"+e.getGenero()+"',"+
-												    "pais="+"'"+e.getNacion()+"'"+
-												    " where idTrabajador="+ide+";";
-			System.out.println(sql);
-			stm.executeUpdate(sql);
-		} catch (SQLException t) {
-			// TODO Auto-generated catch block
-			t.printStackTrace();
-		}
-	}
-
-	
-	
 	public ArrayList<FormEvent> resultQueryExec(String sql){//recorra la lista
 	
 		ArrayList<FormEvent> list = new ArrayList<FormEvent>();
 		try {
 			rs = stm.executeQuery(sql);
 			while(rs.next()){
+				
 				FormEvent item = new FormEvent(this);
+				
 				//item.setId(rs.getInt("id"));
-				item.setId(rs.getInt("idTrabajador"));
-				item.setAgeCategory(rs.getString("tipo_empleado"));
+				item.setId(rs.getInt("id"));
+				item.setTipo_empleado_id(rs.getInt("tipo_empleado_id"));
 				item.setName(rs.getString("nombre"));
 				item.setOccupation(rs.getString("ocupacion"));
-				item.setDefaNa(rs.getString("edad"));
-				item.setGenero(rs.getString("genero"));
-				item.setNacion(rs.getString("pais"));
+				item.setEdad(rs.getInt("edad"));
+				item.setGender(rs.getString("genero"));
+				item.setNacionalidad_id(rs.getInt("nacionalidad_id"));
 				
 				list.add(item);
 			}
@@ -132,26 +98,78 @@ public class DataBaseLayer//capa de base de datos
 			return null;
 		}
 	}
-	///////////
-	public ArrayList<Nacionalidad>resultqueryNacion(String sql){
-		 ArrayList<Nacionalidad>Lista =new ArrayList <Nacionalidad>();
-		
+	//////////
+	public ArrayList<Nacionalidad> resultQueryExecNacion()
+	{		
+		ArrayList<Nacionalidad> lista=new ArrayList<Nacionalidad>();
 		try {
-			rs=stm.executeQuery(sql);
-			while(rs.next()){
-				Nacionalidad item = new Nacionalidad(rs.getInt("id"),rs.getString("nacion"));
-				
-				Lista.add(item);
+			rs = stm.executeQuery("select * from nacionalidad");				
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}			
+		try {	
+			
+			while(rs.next()){							
+										
+				lista.add(new Nacionalidad(rs.getInt("id"),rs.getString("nacion")));					
 			}
 			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return lista;
+	}	
+	///////
+	public ArrayList<Empleado> resultQueryExecEmpleado()
+	{	
+		ArrayList<Empleado> lista=new ArrayList<Empleado>();
+		try {
+			rs = stm.executeQuery("select * from tipo_empleado");				
+			
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}			
+		try {	
+			
+			while(rs.next()){							
+										
+				lista.add(new Empleado(rs.getInt("id"),rs.getString("empleado")));					
+			}
+			rs.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return lista;
+	}	
+	///////
+	public void delete(int id)//metodo se elimina un registro completo
+	{
+		try {
+			stm.executeUpdate("delete from trabajador where id='"+id+"'");				
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
-		return Lista;
 	}
+	//////
+	public void update(int id,int contrato, String nombre, String ocupacion, int edad, String genero, int nacionalidad)
+	{
+		try {
+			stm.executeUpdate("update trabajador set nombre = '"+nombre+"' where id='"+id+"'");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/////
+	
+	
 	
 	
 	

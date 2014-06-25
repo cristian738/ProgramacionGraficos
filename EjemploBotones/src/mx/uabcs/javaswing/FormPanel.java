@@ -3,7 +3,9 @@ package mx.uabcs.javaswing;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -25,401 +27,501 @@ import javax.swing.border.Border;
 //formulario
 public class FormPanel extends JPanel 
 {
-	private JLabel nameLabel;//texto
-	private JLabel occupationLabel;//texto editar
-	private JLabel nacionLabel;
-	private JTextField nameField;//e
-	private JTextField occupationField;
-	private JTextField otros;
+	private JLabel nameLabel;
+	private JLabel ocupationLabel;
+	private JLabel nacionalityLabel;
+	private JLabel edadLabel;
+	private JLabel tipoEmpleadoLabel;
+	private JLabel generoLabel;	
+	private JLabel idLabel;
+	
+	private JTextField ocupationField;
+	private JTextField nemeField;
+	private JTextField nacionalidad;
+	private JTextField edadField;	
+	private JTextField idField;
+	
+	private EmployeeCategory  empCat;
+	
+	private DataBaseLayer b = new DataBaseLayer();
+	
+
+	private String accion = "Agregar persona";
+	private String gender;
+	private String name;
+	private String occupation;
+	private String contrato;
+	private String n;
+	
+	
+	private int edadd;
+	private int id;	
+	
+	private JComboBox empComboBox;
+	private JComboBox nacionComboBox;
+	
+	private JRadioButton maleRadio;
+	private JRadioButton famaRadio;
+	private JRadioButton otherRadio;
+	
+	private ButtonGroup genderGroup;	
+	private JCheckBox checkBoxNacionalidad;
+	private JCheckBox checkBoxEliminar;
+	private JCheckBox checkBoxActualizar;
+
 	
 	private JButton okBtn;
-	private JButton actuBtn;
-	private JButton borrarBtn;
+	private JButton eliminar;
+	private JButton actualizar;
 	
-	private JList ageList; //lista edades
-	////////
-	private JComboBox  empCombo;
-	private JComboBox  nacbase;//combonbox de la base de datos de nacion
-	////
-	private JRadioButton maleRadio;
-	private JRadioButton femalRadio;
-	private JRadioButton otherRadio;//solo para cuando se escoge una opcion 
-	private ButtonGroup genderGroup;//agrupar el contenido
-	private JCheckBox mexBox;
+	private JList ageList;
 	
 	
-	
+	ArrayList<FormEvent> lista = new ArrayList <FormEvent>();
+	public ArrayList<FormEvent> getLista() {
+		return lista;
+	}
 	private FormListener formListener;
-	private ArrayList<Nacionalidad> DataBaseLayer;
-	
-	private DataBaseLayer dbl;//base de datos//movi
 	
 	public FormPanel()
 	{
-		Dimension dim=getPreferredSize();//obtiene el valor del panel,sobreescritura elementos
-		dim.width=250;
+		Dimension dim=getPreferredSize();
+		dim.width = 250;
 		setPreferredSize(dim);
 		
-		nameLabel= new JLabel ("NOMBRE");
-		occupationLabel=new JLabel("OCUPACION");
-		nacionLabel=new JLabel("NACIONALIDAD");
-		nameField = new JTextField(10);
-		occupationField=new JTextField(10);
-		otros=new JTextField(10);
 		
-		ageList=new JList();
 		
-		empCombo = new JComboBox();//instancia
-		//
-		nacbase= new JComboBox();//instancia de base de datos
+		nameLabel = new JLabel("Nombre: ");
+		ocupationLabel= new JLabel("Ocupacion: ");
+		nacionalityLabel = new JLabel("Nacionalidad");		
+		idLabel = new JLabel("ID: ");		
+		edadLabel = new JLabel("Edad: ");
+		tipoEmpleadoLabel = new JLabel("Tipo de empleado: ");
+		generoLabel = new JLabel("Genero");
 		
-		////////
+		
+		
+		ocupationField = new JTextField(10);//cajas de texto
+		nemeField = new JTextField(10);
+		nacionalidad = new JTextField(10);
+		edadField = new JTextField(2);
+		
+		idField = new JTextField(2);
+		
+		
+		
+		
+		
+	
+		
+		ageList = new JList();		
+		empComboBox = new JComboBox();
+		
 		maleRadio = new JRadioButton("Masculino");
-		maleRadio.setActionCommand("Masculino");//comando
-		femalRadio = new JRadioButton("Femenino");
-		femalRadio.setActionCommand("Femenino");
-		otherRadio = new JRadioButton("Otro");
+		maleRadio.setActionCommand("Masculino");
+		maleRadio.setSelected(true);	
+		
+		famaRadio = new JRadioButton("Femenino");
+		famaRadio.setActionCommand("Femenino");
+		
+		otherRadio  = new JRadioButton("Otro");
 		otherRadio.setActionCommand("Otro");
 		
 		genderGroup = new ButtonGroup();
-		maleRadio.setSelected(true);
-		genderGroup.add(maleRadio);
-		genderGroup.add(femalRadio);
-		genderGroup.add(otherRadio);
-		//////////
-		mexBox=new JCheckBox("Mexicano");//JCheckBox
+		
+		checkBoxNacionalidad = new JCheckBox("Mexicana",true);
+		
+		checkBoxEliminar = new JCheckBox("Eliminar",false);
+		checkBoxActualizar = new JCheckBox("Actualizar",false); 
 		
 		
-		///////
-		//bind enlace de datos con grafico
-		DefaultListModel ageModel = new DefaultListModel();//estrutra de datos rellenar 
-		ageModel.addElement(new AgeCategory(18,"18 - 35"));//guardar el id
-		ageModel.addElement(new AgeCategory(36,"36 - 55"));//enlazar los datos y el grafico
-		ageModel.addElement(new AgeCategory(56,"56 - Mas "));
-		
-		ageList.setModel(ageModel);//enlace
-		ageList.setPreferredSize(new Dimension(110,70));//tamano lista
-		ageList.setBorder(BorderFactory.createEmptyBorder());//borde
-		
-		ageList.setSelectedIndex(0);//que empieze el primero
-		//////
-		
-		
-		
-		
-		///////
-		DefaultComboBoxModel empModel = new DefaultComboBoxModel();
-		empModel.addElement(new EmployeeCategory(23,"Empleado"));//agregando
-		empModel.addElement(new EmployeeCategory(28,"Por Contrato"));
-		empModel.addElement(new EmployeeCategory(31,"No es Empleado"));
-		empCombo.setModel(empModel);//ligar
-		empCombo.setSelectedIndex(0);//posicioar en la primera
-		//////////
-		/*
-		DefaultComboBoxModel nacModel = new DefaultComboBoxModel();
-		nacModel.addElement(new NacionCategory(24,"1"));//agregando
-		nacbase.setModel(nacModel);
-		nacbase.setSelectedIndex(0);
-		*/
-		
-		DefaultComboBoxModel nacModel = new DefaultComboBoxModel();
-		ArrayList<Nacionalidad> Lista;
-		
-		//en clase
-		if(dbl.isConnected()){
-			for(Nacionalidad fe: dbl.resultqueryNacion("select * from nacionalidad")){
-				
-				System.out.println(fe.getId());
-				
-				nacModel.addElement(fe);//meterlo en el combox
-				//nacModel.addElement(new NacionCategory(fe.getId(),fe.getNacion()));
-				
-				
-			}
-		}
-				nacbase.setModel(nacModel);
-				nacbase.setSelectedIndex(0);
-		
-		//////
-		
-		////
-		mexBox.addActionListener(new ActionListener() {
 			
+		
+		genderGroup.add(famaRadio);
+		genderGroup.add(maleRadio);
+		genderGroup.add(otherRadio);	
+		
+		
+		// bind // enlazar lo grafico con una base de datos, tener un identificador de lo grafico
+		
+		//sirve para dar valores predeterminados
+		DefaultListModel ageModel = new DefaultListModel();
+		
+		ageModel.addElement(new AgeCategory(0,"18 -35"));
+		ageModel.addElement(new AgeCategory(1,"36 - 55"));
+		ageModel.addElement(new AgeCategory(2,"mas de 56"));
+		
+		ageList.setModel(ageModel);
+		
+		ageList.setPreferredSize(new Dimension(110,70));
+		ageList.setBorder(BorderFactory.createEtchedBorder());
+		ageList.setSelectedIndex(0);		
+		
+		DefaultComboBoxModel empModel = new DefaultComboBoxModel();
+		
+		for(Empleado e: b.resultQueryExecEmpleado())
+		{
+			empModel.addElement(e);
+		}
+		
+		empComboBox.setModel(empModel);
+		
+		
+		nacionComboBox = new JComboBox();
+		
+		DefaultComboBoxModel empModell = new DefaultComboBoxModel();
+		
+		
+		for(Nacionalidad c: b.resultQueryExecNacion())
+		{			
+		
+			empModell.addElement(c);
+		}		
+		nacionComboBox.setModel(empModell);
+		
+		checkBoxNacionalidad.addActionListener(new ActionListener()
+		{
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				if(mexBox.isSelected())
-				{
-					otros.setEnabled(false);
+				if(checkBoxNacionalidad.isSelected())					
+					nacionalidad.setEnabled(false);				
+				
+				else
+					nacionalidad.setEnabled(true);
+				
+			}});
+		checkBoxEliminar.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+				
+				if(checkBoxEliminar.isSelected()){					
+					idField.setEnabled(true);				
+					checkBoxActualizar.setEnabled(false);				
+				}
+				else{
+					
+					idField.setEnabled(false);
+					
+					checkBoxActualizar.setEnabled(true);
+					
+				}
+					
+				
+			}});
+		checkBoxActualizar.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				eliminar.setEnabled(false);
+				if(checkBoxActualizar.isSelected()){					
+						
+					idField.setEnabled(true);
+					checkBoxEliminar.setEnabled(false);
+					
+					
+				}
+				else{
+					
+					idField.setEnabled(false);
+					checkBoxEliminar.setEnabled(true);
+				}
+					
+				
+			}});
+	
+		eliminar = new JButton("Eliminar");
+		actualizar = new JButton("Actualizar");
+		okBtn = new JButton("OK");
+		
+		eliminar.setEnabled(false);
+		idField.setEnabled(false);
+		nacionalidad.setEnabled(false);		
+		actualizar.setEnabled(false);
+		
+			
+		
+		
+		
+		okBtn.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				// TODO Auto-generated method stub			
+				name = nemeField.getText();
+				occupation = ocupationField.getText();	
+				
+				AgeCategory ageCat = (AgeCategory)ageList.getSelectedValue();//selecciona el id de la categorya que se selecciono
+				
+				Empleado tipo  = (Empleado)empComboBox.getSelectedItem(); 
+				Nacionalidad nacion = (Nacionalidad)nacionComboBox.getSelectedItem();
+				
+				//contrato = empCat.toString();				
+				gender = genderGroup.getSelection().getActionCommand();	
+				
+				if(checkBoxEliminar.isSelected()){
+					
+					id = Integer.parseInt(idField.getText());				
+					if(b.isConnected())
+						b.delete(id);					
 				}
 				else
-				{
-					otros.setEnabled(true);
-				}
-			}
-		});
-		
-		borrarBtn = new JButton("Borrar");
-		actuBtn = new JButton("Actualizar");
-		
-		
-		
-		
-		okBtn=new JButton("OK");
-	
-		okBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				JButton clicked=(JButton)e.getSource();
-				if(clicked==okBtn)
-				{
-					String name=nameField.getText();
-					String occupation=occupationField.getText();
-					AgeCategory ageCat = (AgeCategory)ageList.getSelectedValue();//agregar a lista , convertiri un objecto
-					EmployeeCategory empCat = (EmployeeCategory)empCombo.getSelectedItem();
-					
-					//NacionCategory nacCat = (NacionCategory)nacbase.getSelectedItem();//movi
-					
-					//String valor =(String)empCombo.getSelectedItem();
-					//System.out.println(empCat.getId());//mostrar el id
-					//System.out.println(ageCat.getId());
-					
+				{					
+					if(!checkBoxActualizar.isSelected()){						
+						edadd = Integer.parseInt(edadField.getText());				
 						
+						FormEvent ev = new FormEvent(this, name, occupation, edadd,tipo.getId(), gender,nacion.getId(),0);	
 					
-					String edad=ageCat.toString();
-					//int idnacion=nacCat.getId();//movi
-					String  empliado=empCat.toString();
-					//String  nacionbase=nacCat.toString();//movi
-					//System.out.println(empliado);
-					
-					String gender = genderGroup.getSelection().getActionCommand();//obtener el elemento selecionado 
-					//System.out.println(gender);//imprimir en consola
-					
-					String mex=mexBox.getText();
-					String nac=otros.getText();
-					String nacion;
-					int empId=(empCat.getId());
-					//
-					if(mexBox.isSelected()){
-						nacion="Mexicano";
+						if(formListener != null){					
+							formListener.formEventOcurred(ev);					
+						}	
 					}
-					else{
-						nacion=nacionLabel.getText();
-					}
-					//
-					
-					FormEvent ev = new FormEvent(this,name,occupation,edad,empId,empliado,gender,nac,mex);//insiastar un objecto es el new
-					
-					//Nacionalidad op = new Nacionalidad(idnacion,nacionbase);
-					
-					if(formListener !=null)
+					else
 					{
-						formListener.formEventOcurred(ev);	
-			
+						id = Integer.parseInt(idField.getText());
+						
+						if(b.isConnected())
+							b.update(id, empComboBox.getSelectedIndex(), name, occupation, edadd, gender, nacionComboBox.getSelectedIndex());		
 					}
-					
-					
-					
 				}
+			
+			}});		
 		
-			}
-		});
-		
-				//borde del panel
-		Border innerBorder = BorderFactory.createTitledBorder("AGREGAR PERSONA");
+		Border innerBorder = BorderFactory.createTitledBorder(accion);			
 		Border outerBorder = BorderFactory.createEmptyBorder(5,5,5,5);
-		setBorder(BorderFactory.createCompoundBorder(outerBorder,innerBorder));
+		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 		
-		setLayout(new GridBagLayout());//sirve para ser hacer tablas pero con la difrenecia de los componenetes diferentes tamanos
+		setLayout(new GridBagLayout());
+		GridBagConstraints gc = new GridBagConstraints();
 		
-		GridBagConstraints gc = new GridBagConstraints();//guarda información de cómo y dónde añadir el componente
+		///////////Firts row ///////////////////
+		gc.weightx = 1;//Este campo especifica cómo distribuir el espacio vertical extra. El gestor de diseño bolsa de rejilla calcula el peso de una 
+					   //fila para ser el weightx máximo de todos los componentes en una fila. Si el diseño resultante es más pequeña que el área 
+					   //verticalmente que necesita para llenar , el espacio adicional se distribuye a cada fila en proporción a su peso . Una fila que tiene peso 0 recibe ningún espacio extra.
 		
-		/////first row//
-		gc.weightx=1;//determinan la forma en que se van a redimencionar
-		gc.weighty=0.1;//determinan la forma en que se van a redimencionar
+		gc.weighty = 0.1;//Este campo especifica cómo distribuir el espacio horizontal extra. El controlador de distribución bolsa de rejilla calcula 
+		                 //el peso de una columna a ser el peso máximo de todos los componentes en una fila . Si el diseño resultante es más pequeña que el área 
+		                 //horizontal que necesita para llenar , el espacio adicional se distribuye a cada columna en proporción a su peso . Una columna que tiene 
+		                 //peso 0 recibe ningún espacio extra. Si todos los pesos son cero , todo el espacio extra aparece entre las rejillas de la celda y los bordes derecho e izquierdo .
 		
-		gc.gridx=0;//fila donde se coloca el componente
-		gc.gridy=0;//columna donde se coloca el componente
-		gc.fill=GridBagConstraints.NONE;//fill determina la forma en que un Componente rellena el área//NONE El Componente es reducido a su tamaño ideal
+		gc.gridx = 0;//Especifica la celda a la izquierda del área de visualización del componente, donde la celda del extremo izquierdo tiene gridx = 0.
+					 //El GridBagConstraints.RELATIVE valor especifica que el componente se coloca justo a la derecha del componente que se agrega al contenedor justo antes de añadir este componente.
+		
+		gc.gridy = 0;//Especifica la celda en la parte superior del área de visualización del componente , donde la celda más alta tiene Gridy = 0.
+		             //El GridBagConstraints.RELATIVE valor especifica que el componente se coloca justo debajo del componente que se agrega al contenedor justo antes de añadir este componente.
+		
+		gc.fill= GridBagConstraints.NONE;// Este campo se usa cuando el área de visualización del componente es mayor que el tamaño requerido del componente.
+										 //Se determinará si se debe cambiar el tamaño del componente 
 		gc.anchor=GridBagConstraints.LINE_END;
-		gc.insets=new Insets(0,0,0,5);//poner espacio entre el borde y el componente
-		add(nameLabel,gc);
+		gc.insets = new Insets(0,0,0,5);
+		add(nameLabel,gc);//gc se le dice donde ponerlo
 		
-		gc.gridx=1;
-		gc.gridy=0;
-		gc.insets=new Insets (0,0,0,0);
+		
+		gc.gridx = 1;
+		gc.gridy = 0;
+		gc.insets = new Insets(0,0,0,0);//insets Este campo especifica el espaciado externo del componente,
+										//la cantidad mínima de espacio entre el componente y los bordes de su área de visualización .
 		gc.anchor=GridBagConstraints.LINE_START;
-		add(nameField,gc);
+		add(nemeField, gc);		
 		
-		////second row/////
-		gc.weightx=1;
-		gc.weighty=0.1;
+		//////////////////Secind rom /////////////	
 		
-		gc.gridx=0;
-		gc.gridy=1;
-		gc.insets=new Insets(0,0,0,5);
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 0;
+		gc.gridy = 1;
+		gc.insets = new Insets(0,0,0,5);
 		gc.anchor=GridBagConstraints.LINE_END;
-		add(occupationLabel,gc);
+		add(ocupationLabel,gc);
 		
-		gc.gridx=1;
-		gc.gridy=1;
-		gc.insets=new Insets(0,0,0,5);
+		gc.gridx = 1;
+		gc.gridy = 1;
+		gc.weighty = 0.1;
+		gc.insets = new Insets(0,0,0,5);
 		gc.anchor=GridBagConstraints.LINE_START;
-		add(occupationField,gc);
-		//////third row//
-	
-		///cuarto boton//
-		gc.weightx=1;
-		gc.weighty=0.2;
+		add(ocupationField,gc);		
 		
-		gc.gridx=1;
-		gc.gridy=2;
-		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(ageList,gc);
+		//////////////////// Third row ////////////////
+		//////row//////
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 0;
+		gc.gridy = 2;
 		
-		////ComboBox dar opcioes
-		gc.weightx=1;
-		gc.weighty=2.0;
+		gc.fill= GridBagConstraints.NONE;
+		gc.anchor=GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0,0,0,5);
+		add(edadLabel,gc);
 		
-		gc.gridx=1;
-		gc.gridy=3;//sepracion de letras de utra tras otra
-		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(empCombo,gc);
-		//////////
-		gc.weightx=1;
-		gc.weighty=0.05;
 		
-		gc.gridx=1;
-		gc.gridy++;//sepracion de letras de utra tras otra
+		gc.gridx = 1;
+		gc.gridy = 2;
+		gc.weighty = 0.1;
+		gc.weightx = 1;
+		gc.insets = new Insets(0,0,0,0);
+		gc.anchor=GridBagConstraints.LINE_START;
+		add(edadField,gc);			
+		
+		
+		///////row//////
+		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 0;
+		gc.gridy = 3;
+		
+		gc.fill= GridBagConstraints.NONE;
+		gc.anchor=GridBagConstraints.LINE_END;
+		gc.insets = new Insets(0,0,0,5);
+		add(tipoEmpleadoLabel,gc);
+		
+		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 3;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(nacbase,gc);
-		/////////
-		gc.gridy++;
-		gc.weightx=1;
-		gc.weighty=0.05;
-		gc.gridx=1;
+		gc.insets = new Insets(0,0,0,0);
+		add(empComboBox,gc);
+		
+		///////////row///////////
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy  = 4;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
+		gc.insets = new Insets(0,0,0,0);
+		add(generoLabel,gc);
+		
+		
+		///////row//////
+		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 5;
+		gc.anchor=GridBagConstraints.FIRST_LINE_START;
+		gc.insets = new Insets(0,0,0,0);
 		add(maleRadio,gc);
-		/////////
-		gc.gridy++;
-		gc.weightx=1;
-		gc.weighty=0.05;
-		gc.gridx=1;
-		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(femalRadio,gc);
-		///////
-		gc.gridy++;
 		
-		gc.weightx=1;
-		gc.weighty=0.05;
-		gc.gridx=1;
+		///////row//////
 		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 6;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
+		gc.insets = new Insets(0,0,0,0);
+		add(famaRadio,gc);
+		
+		///////row//////
+		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 7;
+		gc.anchor=GridBagConstraints.FIRST_LINE_START;
+		gc.insets = new Insets(0,0,0,0);
 		add(otherRadio,gc);
 		
-		///////////
+		///////row//////
 		
-		/////////
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=0.05;//espacio entre fila
-		
-		gc.gridx=1;
-		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 8;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,5);
-		add(nacionLabel,gc);
+		gc.insets = new Insets(0,0,0,0);
+		add(nacionalityLabel,gc);	
 		
-		//////////
-		/////////
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=0.05;//espacio entre fila
 		
-		gc.gridx=1;
+		///////row//////
 		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 9;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,5);
-		add(mexBox,gc);
+		gc.insets = new Insets(0,0,0,0);
+		add(nacionComboBox,gc);	
 		
-		//////////
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=2.0;
+		///////row//////
 		
-		gc.gridx=1;
-		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 10;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(otros,gc);
-		//////////
+		gc.insets = new Insets(0,0,0,0);
+		add(okBtn,gc);	
 		
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=0.05;
 		
-		gc.gridx=1;
-		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 11;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(okBtn,gc);
-		////////
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=0.05;
+		gc.insets = new Insets(0,0,0,0);
+		add(checkBoxEliminar,gc);	
 		
-		gc.gridx=1;
-		
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 1;
+		gc.gridy = 12;
 		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(borrarBtn,gc);
-		///////
-		gc.gridy++;//incrementa la fila
-		gc.weightx=1;
-		gc.weighty=0.05;
+		gc.insets = new Insets(0,0,0,0);
+		add(checkBoxActualizar,gc);	
 		
-		gc.gridx=1;
+		gc.weightx = 1;
+		gc.weighty = 0.1;
+		gc.gridx = 0;
+		gc.gridy = 13;
+		gc.insets = new Insets(0,0,0,0);
+		gc.anchor=GridBagConstraints.LINE_END;
+		add(idLabel,gc);
 		
-		gc.anchor=GridBagConstraints.FIRST_LINE_START;
-		gc.insets=new Insets(0,0,0,0);
-		add(actuBtn,gc);
+		gc.gridx = 1;
+		gc.gridy = 13;
+		gc.weighty = 0.1;
+		gc.weightx = 1;
+		gc.insets = new Insets(0,0,0,0);
+		gc.anchor=GridBagConstraints.LINE_START;
+		add(idField,gc);	
 		
 	}
-	public void setFormListener(FormListener listener)
+	public void setFormListener(FormListener Listener)
 	{
-		this.formListener=listener;
+		this.formListener=Listener;
 	}
 	
-	
-	
-}
-//clases internas
-class AgeCategory//objecto guardar lista
-{
-		private int id;
-		private String text;
-		
-		public AgeCategory (int id, String text){
-			this.id=id;
-			this.text=text;
-		}
-	
-		public String toString(){//imprime el texto
-			return text;
-		}
-	
-		public int getId(){//imprime el id
-			return id;
-		} 
 }
 ///////
+//clase interna  
+class AgeCategory
+{
+	private int id;
+	private String text;
+	
+	public AgeCategory(int id,String text)
+	{
+		this.id=id;
+		this.text=text;
+	}
+	public String toString(){
+		return text;
+	}
+	public int getId() {
+		return id;
+	}
+	
+}
+///
 class EmployeeCategory
 {
 
@@ -440,28 +542,27 @@ class EmployeeCategory
 	}
 	
 }
-//////////
-
-class NacionCategory
+//
+class Nacionality
 {
 	private int id;
 	private String nacion;
 	
-	public NacionCategory (int id, String nacion)
+	public Nacionality(int id,String nacion)
 	{
 		this.id=id;
 		this.nacion=nacion;
 	}
-	
-	public int getId(){//imprime el id
+	public String toString(){
+		return nacion;
+	}
+	public int getId() {
 		return id;
 	}
 	
-	public String toString(){//imprime el texto
-		return nacion;
-	}
-	
 }
+
+
 
 
 

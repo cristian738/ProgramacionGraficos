@@ -18,8 +18,6 @@ public class MainFrame extends JFrame {
 	private Toolbar toolbar;
 	private FormPanel borde;//personas
 	private ArrayList<FormEvent> myList;//coleccion(arreglo)
-	
-	private ArrayList<Nacionalidad> DataBaseLayer;//movi
 	/////
 	private DataBaseLayer dbl; //intancia con la base de datos,crear conection base de datos
 	
@@ -42,7 +40,7 @@ public class MainFrame extends JFrame {
 		
 		
 		//toolbar.setTextPanel(textPanel);
-		toolbar.setStringListener(new StringListener(){
+		toolbar.setStringListener(new StringListener(){//este mandan una cadena
 
 			@Override
 			public void textEmitted(String text) {//regresar un parametro y lo recive textpanel
@@ -62,14 +60,11 @@ public class MainFrame extends JFrame {
 					for(FormEvent f: list)//desplegar todo
 					{
 					//System.out.println(f.getName()+" "+f.getOccupation());
-					textPanel.appendText("Id"+ f.getId()+":"+"Nombre: "+f.getName()+" : "+"Ocupacion: "+ f.getOccupation()+" : "+"Edad: "+f.getAgeCategory()+" Tipo Empleado: "+ f.getEmployeeCategory()+" "+f.getGenero()+" "+"Nacionalidad"+" : "+f.getNacion()+f.getDefaNa()+"\n");
+						textPanel.appendText("ID: "+f.getId()+"\n"+"Nombre: "+f.getName()+"\n"+"Ocupacion: "+f.getOccupation()+"\n"+
+									"Edad: "+f.getEdad()+"\n"+"Categoria: "+f.getTipo_empleado_id()+"\n"+"Genero: "+f.getGender()+"\n"+
+									"Nacionalidad: "+f.getNacionalidad_id()+"\n"+"**********************************************"+"\n");	
 					}
-				}
-				else if(dbl.isConnected()){
-					ArrayList<Nacionalidad> list = dbl.resultqueryNacion("select * from nacionalidad");
-					for(Nacionalidad f: list){
-						textPanel.appendText("id: "+f.getId()+"\n"+"Nacion: "+f.getNacion());
-					}
+
 				}
 				
 								
@@ -82,17 +77,16 @@ public class MainFrame extends JFrame {
 			@Override
 			public void formEventOcurred(FormEvent e) {
 				// TODO Auto-generated method stub
-				//myList.add(e);//guardalo en la lista para desplegar en el panel
+				myList.add(e);//guardalo en la lista para desplegar en el panel
 				int edad=20;
 				//String name=e.getName();
 				//String occupation=e.getOccupation();
 				//textPanel.appendText(name + " : "+ occupation + "\n");//meterlo en el panel
 				if(dbl.isConnected())
 				{
+					String sql="INSERT INTO trabajador" + "(tipo_empleado_id,nombre,ocupacion,edad,genero,nacionalidad_id)"+
+							"VAlUES('" +e.getTipo_empleado_id()+"','"+e.getName()+"','"+e.getOccupation()+"','"+e.getEdad()+"','"+e.getGender()+"','"+e.getNacionalidad_id()+"')";
 					
-					System.out.println(e.getNacion());
-				String sql="INSERT INTO trabajador(tipo_empleado,nombre,ocupacion,edad,genero,pais)"+
-						"VALUES('" + e.getEmployeeCategory() +"','"+e.getName()+"','"+e.getOccupation() + "','" +edad+ "','"+e.getGenero()+"','"+e.getNacion()+"')";
 				dbl.queryExect(sql);//Guardalo en la base datos
 				}
 				
@@ -116,7 +110,7 @@ public class MainFrame extends JFrame {
 		add(btn, BorderLayout.SOUTH);
 		
 		
-		setSize(600, 500);//tamano de la ventana
+		setSize(800, 700);//tamano de la ventana
 		setLocation(350,50);//posicionar ventana
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);

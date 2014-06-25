@@ -4,38 +4,69 @@ import java.util.EventObject;
 
 public class FormEvent extends EventObject {//evento que va a suceder dentro del formulario
 
-	private String name;
-	private String occupation;
-	private String ageCategory; 
-	private String employeeCategory;
-	private String genero;
-	private String nacion;//pais
-	private String defaNa;//edad
+	private String name=null;
+	private String occupation=null;
+	private int edad=0;
+	private int tipo_empleado_id;
+	private String gender=null;
+	private int nacionalidad_id;
 	private int id;
-	
+	//////////////
+	private String name2=null;
+	private String tipo=null;
+	private String nacion=null;
+	/////////////
 	
 	public FormEvent(Object source) {
 		super(source);
 		// TODO Auto-generated constructor stub
 		
 	}
-	public FormEvent(Object source,String name, String occupation,String ageCategory,int id,String employeeCategory,String genero ,String nacion,String defaNa  )
+	public FormEvent(Object sourse, String name, String occupation, int edad, int tipo_empleado_id, String gender,int nacionalidad_id,int id)
 	{
-		super(source);
-		
-		this.name=name;
-		this.occupation=occupation;
-		this.ageCategory=ageCategory;
-		this.employeeCategory=employeeCategory;
-		this.genero=genero;
-		this.nacion=nacion;
-		this.defaNa=defaNa;
+		super(sourse);
+		this.name = name;
+		this.occupation = occupation;	
+		this.edad = edad;		
+		this.tipo_empleado_id = tipo_empleado_id;
+		this.gender = gender;
+		this.nacionalidad_id = nacionalidad_id;
 		this.id=id;
 	}
+	public FormEvent(Object sourse,String name2,String tipo,String nacion )
+	{
+		super(sourse);
+		this.name2=name2;
+		this.tipo=tipo;
+		this.nacion=nacion;
+	}
 	
-	
+	public int getNacionalidad_id() {
+		return nacionalidad_id;
+	}
+	public void setNacionalidad_id(int nacionalidad_id) {
+		this.nacionalidad_id = nacionalidad_id;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public int getTipo_empleado_id() {
+		return tipo_empleado_id;
+	}
+	public void setTipo_empleado_id(int tipo_empleado_id) {
+		this.tipo_empleado_id = tipo_empleado_id;
+	}
 	public String getName() {
 		return name;
+	}
+	public int getEdad() {
+		return edad;
+	}
+	public void setEdad(int edad) {
+		this.edad = edad;
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -46,44 +77,13 @@ public class FormEvent extends EventObject {//evento que va a suceder dentro del
 	public void setOccupation(String occupation) {
 		this.occupation = occupation;
 	}
-	
-	public String getAgeCategory() {
-		return ageCategory;
-	}
-	public void setAgeCategory(String ageCategory) {
-		this.ageCategory = ageCategory;
-	}
-	public String getEmployeeCategory() {
-		return employeeCategory;
-	}
-	public void setEmployeeCategory(String employeeCategory) {
-		this.employeeCategory = employeeCategory;
-	}
-	public String getGenero() {
-		return genero;
-	}
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
-	public String getNacion() {
-		return nacion;
-	}
-	public void setNacion(String nacion) {
-		this.nacion = nacion;
-	}
-	public String getDefaNa() {
-		return defaNa;
-	}
-	public void setDefaNa(String defaNa) {
-		this.defaNa = defaNa;
-	}
-	////
 	public int getId() {
 		return id;
-	}
+	}	
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	
 	
 	

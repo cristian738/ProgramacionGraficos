@@ -18,6 +18,8 @@ public class MainFrame extends JFrame {
 	private Toolbar toolbar;
 	private FormPanel borde;//personas
 	private ArrayList<FormEvent> myList;//coleccion(arreglo)
+	
+	private ArrayList<Nacionalidad> DataBaseLayer;//movi
 	/////
 	private DataBaseLayer dbl; //intancia con la base de datos,crear conection base de datos
 	
@@ -62,7 +64,12 @@ public class MainFrame extends JFrame {
 					//System.out.println(f.getName()+" "+f.getOccupation());
 					textPanel.appendText("Id"+ f.getId()+":"+"Nombre: "+f.getName()+" : "+"Ocupacion: "+ f.getOccupation()+" : "+"Edad: "+f.getAgeCategory()+" Tipo Empleado: "+ f.getEmployeeCategory()+" "+f.getGenero()+" "+"Nacionalidad"+" : "+f.getNacion()+f.getDefaNa()+"\n");
 					}
-
+				}
+				else if(dbl.isConnected()){
+					ArrayList<Nacionalidad> list = dbl.resultqueryNacion("select * from nacionalidad");
+					for(Nacionalidad f: list){
+						textPanel.appendText("id: "+f.getId()+"\n"+"Nacion: "+f.getNacion());
+					}
 				}
 				
 								

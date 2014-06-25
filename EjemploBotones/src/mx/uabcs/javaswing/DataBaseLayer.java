@@ -17,7 +17,7 @@ public class DataBaseLayer//capa de base de datos
 	/////
 	
 	private String server = "localhost";
-	private String db = "progra3";
+	private String db = "progra3";//cambiar como se llama la base de datos
 	private String user="root";
 	private String pwd="rosasgonzalez738";
 	
@@ -132,7 +132,26 @@ public class DataBaseLayer//capa de base de datos
 			return null;
 		}
 	}
-	
+	///////////
+	public ArrayList<Nacionalidad>resultqueryNacion(String sql){
+		 ArrayList<Nacionalidad>Lista =new ArrayList <Nacionalidad>();
+		
+		try {
+			rs=stm.executeQuery(sql);
+			while(rs.next()){
+				Nacionalidad item = new Nacionalidad(rs.getInt("id"),rs.getString("nacion"));
+				
+				Lista.add(item);
+			}
+			rs.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		return Lista;
+	}
 	
 	
 	

@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -38,8 +37,10 @@ public class FormPanel extends JPanel
 	private JButton borrarBtn;
 	
 	private JList ageList; //lista edades
+	////////
 	private JComboBox  empCombo;
-	
+	private JComboBox  nacbase;//combonbox de la base de datos de nacion
+	////
 	private JRadioButton maleRadio;
 	private JRadioButton femalRadio;
 	private JRadioButton otherRadio;//solo para cuando se escoge una opcion 
@@ -49,8 +50,9 @@ public class FormPanel extends JPanel
 	
 	
 	private FormListener formListener;
+	private ArrayList<Nacionalidad> DataBaseLayer;
 	
-	
+	private DataBaseLayer dbl;//base de datos//movi
 	
 	public FormPanel()
 	{
@@ -68,6 +70,9 @@ public class FormPanel extends JPanel
 		ageList=new JList();
 		
 		empCombo = new JComboBox();//instancia
+		//
+		nacbase= new JComboBox();//instancia de base de datos
+		
 		////////
 		maleRadio = new JRadioButton("Masculino");
 		maleRadio.setActionCommand("Masculino");//comando
@@ -97,6 +102,9 @@ public class FormPanel extends JPanel
 		ageList.setBorder(BorderFactory.createEmptyBorder());//borde
 		
 		ageList.setSelectedIndex(0);//que empieze el primero
+		//////
+		
+		
 		
 		
 		///////
@@ -106,7 +114,35 @@ public class FormPanel extends JPanel
 		empModel.addElement(new EmployeeCategory(31,"No es Empleado"));
 		empCombo.setModel(empModel);//ligar
 		empCombo.setSelectedIndex(0);//posicioar en la primera
+		//////////
+		/*
+		DefaultComboBoxModel nacModel = new DefaultComboBoxModel();
+		nacModel.addElement(new NacionCategory(24,"1"));//agregando
+		nacbase.setModel(nacModel);
+		nacbase.setSelectedIndex(0);
+		*/
 		
+		DefaultComboBoxModel nacModel = new DefaultComboBoxModel();
+		ArrayList<Nacionalidad> Lista;
+		
+		//en clase
+		if(dbl.isConnected()){
+			for(Nacionalidad fe: dbl.resultqueryNacion("select * from nacionalidad")){
+				
+				System.out.println(fe.getId());
+				
+				nacModel.addElement(fe);//meterlo en el combox
+				//nacModel.addElement(new NacionCategory(fe.getId(),fe.getNacion()));
+				
+				
+			}
+		}
+				nacbase.setModel(nacModel);
+				nacbase.setSelectedIndex(0);
+		
+		//////
+		
+		////
 		mexBox.addActionListener(new ActionListener() {
 			
 			@Override
@@ -143,6 +179,8 @@ public class FormPanel extends JPanel
 					AgeCategory ageCat = (AgeCategory)ageList.getSelectedValue();//agregar a lista , convertiri un objecto
 					EmployeeCategory empCat = (EmployeeCategory)empCombo.getSelectedItem();
 					
+					//NacionCategory nacCat = (NacionCategory)nacbase.getSelectedItem();//movi
+					
 					//String valor =(String)empCombo.getSelectedItem();
 					//System.out.println(empCat.getId());//mostrar el id
 					//System.out.println(ageCat.getId());
@@ -150,7 +188,9 @@ public class FormPanel extends JPanel
 						
 					
 					String edad=ageCat.toString();
-					String   empliado=empCat.toString();
+					//int idnacion=nacCat.getId();//movi
+					String  empliado=empCat.toString();
+					//String  nacionbase=nacCat.toString();//movi
 					//System.out.println(empliado);
 					
 					String gender = genderGroup.getSelection().getActionCommand();//obtener el elemento selecionado 
@@ -169,8 +209,9 @@ public class FormPanel extends JPanel
 					}
 					//
 					
-					FormEvent ev = new FormEvent(this,name,occupation,edad,empId,empliado,gender,nac,mex);//insiastar un objecto es el new								
+					FormEvent ev = new FormEvent(this,name,occupation,edad,empId,empliado,gender,nac,mex);//insiastar un objecto es el new
 					
+					//Nacionalidad op = new Nacionalidad(idnacion,nacionbase);
 					
 					if(formListener !=null)
 					{
@@ -248,6 +289,15 @@ public class FormPanel extends JPanel
 		gc.insets=new Insets(0,0,0,0);
 		add(empCombo,gc);
 		//////////
+		gc.weightx=1;
+		gc.weighty=0.05;
+		
+		gc.gridx=1;
+		gc.gridy++;//sepracion de letras de utra tras otra
+		gc.anchor=GridBagConstraints.FIRST_LINE_START;
+		gc.insets=new Insets(0,0,0,0);
+		add(nacbase,gc);
+		/////////
 		gc.gridy++;
 		gc.weightx=1;
 		gc.weighty=0.05;
@@ -390,7 +440,28 @@ class EmployeeCategory
 	}
 	
 }
+//////////
 
+class NacionCategory
+{
+	private int id;
+	private String nacion;
+	
+	public NacionCategory (int id, String nacion)
+	{
+		this.id=id;
+		this.nacion=nacion;
+	}
+	
+	public int getId(){//imprime el id
+		return id;
+	}
+	
+	public String toString(){//imprime el texto
+		return nacion;
+	}
+	
+}
 
 
 
